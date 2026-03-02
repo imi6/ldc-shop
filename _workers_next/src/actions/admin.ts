@@ -704,6 +704,21 @@ export async function saveNotificationSettings(formData: FormData) {
     await setSetting('email_language', emailLanguage)
 
     revalidatePath('/admin/notifications')
+
+    return {
+        telegramBotToken: token,
+        telegramChatId: chatId,
+        telegramLanguage: language || 'zh',
+        telegramEnabled,
+        barkEnabled,
+        barkServerUrl: barkServerUrl || 'https://api.day.app',
+        barkDeviceKey,
+        resendApiKey,
+        resendFromEmail,
+        resendFromName,
+        resendEnabled,
+        emailLanguage
+    }
 }
 
 export async function testNotification() {

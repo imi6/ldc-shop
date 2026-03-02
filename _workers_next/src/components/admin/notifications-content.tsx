@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useI18n } from "@/lib/i18n/context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -51,27 +51,23 @@ export function NotificationsContent({ settings }: NotificationsContentProps) {
     const [isTestingEmail, setIsTestingEmail] = useState(false)
     const [testEmail, setTestEmail] = useState('')
 
-    useEffect(() => {
-        setToken(settings.telegramBotToken || '')
-        setChatId(settings.telegramChatId || '')
-        setLanguage(settings.telegramLanguage || 'zh')
-        setTelegramEnabled(settings.telegramEnabled || false)
-        setBarkEnabled(settings.barkEnabled || false)
-        setBarkServerUrl(settings.barkServerUrl || 'https://api.day.app')
-        setBarkDeviceKey(settings.barkDeviceKey || '')
-        setResendEnabled(settings.resendEnabled || false)
-        setResendApiKey(settings.resendApiKey || '')
-        setResendFromEmail(settings.resendFromEmail || '')
-        setResendFromName(settings.resendFromName || '')
-        setEmailLanguage(settings.emailLanguage || 'zh')
-    }, [settings])
-
     async function handleSave(formData: FormData) {
         setIsLoading(true)
         try {
-            await saveNotificationSettings(formData)
+            const saved = await saveNotificationSettings(formData)
+            setToken(saved.telegramBotToken || '')
+            setChatId(saved.telegramChatId || '')
+            setLanguage(saved.telegramLanguage || 'zh')
+            setTelegramEnabled(!!saved.telegramEnabled)
+            setBarkEnabled(!!saved.barkEnabled)
+            setBarkServerUrl(saved.barkServerUrl || 'https://api.day.app')
+            setBarkDeviceKey(saved.barkDeviceKey || '')
+            setResendEnabled(!!saved.resendEnabled)
+            setResendApiKey(saved.resendApiKey || '')
+            setResendFromEmail(saved.resendFromEmail || '')
+            setResendFromName(saved.resendFromName || '')
+            setEmailLanguage(saved.emailLanguage || 'zh')
             toast.success(t('common.success'))
-            window.location.reload()
         } catch (e: any) {
             toast.error(e.message || t('common.error'))
         } finally {
